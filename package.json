@@ -1,0 +1,15 @@
+{
+  "name": "hapi-metasnapper-server",
+  "version": "1.0.0",
+  "description": "A server for the metasnapper app, implemented in node and hapi.",
+  "main": "./echo-servers/cors-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nigel Johnson",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.1.0",
+    "nodemailer": "^6.4.18"
+  }
+}
