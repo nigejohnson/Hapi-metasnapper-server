@@ -28,7 +28,7 @@ function sendAnEmail (item) {
   var mailOptions = {
     from: mailfrom,
     to: mailto,
-    subject: 'MetaSnap: ' + item.title,
+    subject: item.title,
     // subject: item.title,
     text: item.note + '\n' + 'At time: ' + item.datetime + '\n' + 'At location: ' + item.latitude + ' latitude and ' + item.longitude + ' longitude.',
     // text: 'Field Notes test message'
