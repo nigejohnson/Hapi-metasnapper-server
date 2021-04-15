@@ -173,7 +173,9 @@ const init = async () => {
           payload.forEach(sendAnEmail);
         }
 
-        responseString += 'Snaps being posted to: ' + mailto;
+        var reformattedMailTo = mailto.replace(';', '<br>');
+
+        responseString += 'Snaps being posted to:<br>' + reformattedMailTo;
 
         // return "hapi isn't great";
 
