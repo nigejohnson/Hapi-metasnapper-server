@@ -148,38 +148,51 @@ const init = async () => {
       path: '/',
       options: { payload: { maxBytes: 104857600 } },
       handler: (request, h) => {
-        var responseString = 'Snaps received successfully.';
-        console.log('Received snaps as follows:');
-        console.log('\n\n');
+        try {
+        // var responseString = 'Snaps received successfully.';
+          var responseString = '';
+          console.log('Received snaps as follows:');
+          console.log('\n\n');
 
-        console.log(JSON.stringify(request.headers, null, 2));
-        console.log('\n\n');
+          console.log(JSON.stringify(request.headers, null, 2));
+          console.log('\n\n');
 
-        // const contentType = request.get('content-type');
+          // const contentType = request.get('content-type');
 
-        const contentType = request.headers['content-type'];
-        mailto = request.headers['configured-mailto'];
+          const contentType = request.headers['content-type'];
+          mailto = request.headers['configured-mailto'];
 
-        // var payload = JSON.parse(request.body);
-        var payload = JSON.parse(request.payload);
+          if (mailto === undefined) {
+            return h.response('No configured-mailto header on request.').code(400);
+          }
 
-        console.log(request.payload);
+          // var payload = JSON.parse(request.body);
+          var payload = JSON.parse(request.payload);
 
-        console.log('Content type is ' + contentType);
-        console.log('Finished receiving posted snaps.');
-        console.log('\n\n');
+          if (payload === undefined) {
+            return h.response('No JSON payload on request.').code(400);
+          }
 
-        if (sendEmail) {
-          payload.forEach(sendAnEmail);
+          console.log(request.payload);
+
+          console.log('Content type is ' + contentType);
+          console.log('Finished receiving posted snaps.');
+          console.log('\n\n');
+
+          if (sendEmail) {
+            payload.forEach(sendAnEmail);
+          }
+
+          var reformattedMailTo = mailto.replace(';', '<br>');
+
+          responseString += 'Snaps being posted to:<br>' + reformattedMailTo;
+
+          // return "hapi isn't great";
+
+          return h.response(responseString);
+        } catch (e) {
+          return h.response('Unexpected server side error: ' + e).code(500);
         }
-
-        var reformattedMailTo = mailto.replace(';', '<br>');
-
-        responseString += 'Snaps being posted to:<br>' + reformattedMailTo;
-
-        // return "hapi isn't great";
-
-        return h.response(responseString);
       }
     }
   ]);
