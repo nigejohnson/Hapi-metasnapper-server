@@ -25,6 +25,18 @@ const transporter = nodemailer.createTransport({
 
 function sendAnEmail (item) {
   console.log('Mail to is: ' + mailto);
+  // Putting datetime first in the file name so that snaps order sensibly
+  var rawattachname = item.datetime + '-title-' + item.title;
+  // Clean any invalid characters out of the filename
+  // The following is the full verion of the regex to exclude invalid characters
+  // from windows file names including control characters, the line feeds.
+  // But this causes semistandard to object and I don't think you can enter these characters via the
+  // app.
+  // var attachname = rawattachname.replace(/[<>:"\/\\\|?*\x00-\x1F]/g, '');
+  // Also removing any leading or trailing whitespace.
+  var attachname = rawattachname.replace(/[<>:"/\\|?*]/g, '').trim() + '.jpeg';
+
+  console.log('Attachment name is: ' + attachname);
   var mailOptions = {
     from: mailfrom,
     to: mailto,
@@ -33,7 +45,9 @@ function sendAnEmail (item) {
     text: item.note + '\n' + 'At time: ' + item.datetime + '\n' + 'At location: ' + item.latitude + ' latitude and ' + item.longitude + ' longitude.',
     // text: 'Field Notes test message'
     attachments: [
-      { // encoded image as an attachment
+      {
+        filename: attachname,
+        // encoded image as an attachment
         path: item.photoasdataurl
 
       }
@@ -183,7 +197,7 @@ const init = async () => {
             payload.forEach(sendAnEmail);
           }
 
-          var reformattedMailTo = mailto.replace(';', '<br>');
+          var reformattedMailTo = mailto.replace(/;/g, '<br>');
 
           responseString += 'Snaps being posted to:<br>' + reformattedMailTo;
 
